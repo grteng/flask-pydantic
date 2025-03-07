@@ -12,11 +12,6 @@ from .exceptions import (
 )
 from .exceptions import ValidationError as FailedValidation
 
-try:
-    from flask_restful import original_flask_make_response as make_response
-except ImportError:
-    pass
-
 
 def make_json_response(
     content: Union[BaseModel, Iterable[BaseModel]],
@@ -294,6 +289,11 @@ def validate(
                 return ret
 
             return res
+
+        # register this decorator's args
+        setattr(wrapper, "_body", body)
+        setattr(wrapper, "_query", query)
+        setattr(wrapper, "_form", form)
 
         return wrapper
 
